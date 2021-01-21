@@ -1,0 +1,6 @@
+content:
+  - Fix the non-compiled hierarchy
+  - Throw an IOException
+  - The index of an argument
+  - The smallest value
+  - Sorting arrays

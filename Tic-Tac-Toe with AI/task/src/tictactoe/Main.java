@@ -1,34 +1,49 @@
 package tictactoe;
 
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Checker checker = new Checker();
         Field field = new Field(checker);
+        AI ai = new AI(checker);
 
-        System.out.println("Enter the cells:");
-        String fieldFill = new Scanner(System.in).next();
-        field.fillField(fieldFill);
+        game(checker, field, ai, Difficulty.EASY);
+    }
+
+    private static void game(Checker checker, Field field, AI ai, Difficulty difficulty) {
+        field.fillField("_________");
         field.showField();
 
-        int i = field.determineWhoMakeNextMove().equals("X") ? 0 : 1;
+        int i = 0;
         State result = State.Continue;
 
         while (result == State.Continue) {
             try {
-                System.out.println("Enter the coordinates: ");
-                String coordinates = new Scanner(System.in).nextLine();
-                field.putOnField(i % 2 == 0 ? "X" : "O", coordinates);
+                if (i % 2 == 0) {
+                    System.out.println("Enter the coordinates: ");
+                    String coordinates = new Scanner(System.in).nextLine();
+                    field.putOnField("X", coordinates);
+                } else {
+                    System.out.println("Making move level \"" + difficulty.name().toLowerCase(Locale.ROOT) + "\"");
+                    while (true) {
+                        try {
+                            String coordinates = ai.makeMove(difficulty, field.getField());
+                            field.putOnField("O", coordinates);
+                            break;
+                        } catch (IllegalArgumentException e) {
+                            continue;
+                        }
+                    }
+                }
                 field.showField();
                 i++;
 
                 result = checker.checkGameState(field.getField());
-                break;
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }
-
         }
 
         if (result == State.X) {
@@ -37,8 +52,6 @@ public class Main {
             System.out.println(State.O.getMessage());
         } else if (result == State.Draw) {
             System.out.println(State.Draw.getMessage());
-        } else {
-            System.out.println(State.Continue.getMessage());
         }
     }
 }
