@@ -34,6 +34,20 @@ public class Checker {
 		}
 	}
 
+	public void checkParameters(String input) throws IllegalArgumentException {
+		IllegalArgumentException exception = new IllegalArgumentException("Bad parameters!");
+		String[] parameters = input.split("\\s+");
+
+		if ("exit".equals(parameters[0]))
+			return;
+		if (parameters.length != 3)
+			throw exception;
+		if (!parameters[0].matches("start|exit"))
+			throw exception;
+		if (!parameters[1].matches("user|easy|medium|hard") || !parameters[2].matches("user|easy|medium|hard"))
+			throw exception;
+	}
+
 	/**
 	 * Check game state
 	 *

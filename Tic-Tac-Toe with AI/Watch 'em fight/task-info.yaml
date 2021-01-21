@@ -1,7 +1,7 @@
 type: edu
 custom_name: stage3
 files:
-- name: src/tictactoe/Main.java
+  - name: src/tictactoe/Main.java
   visible: true
   text: |
     package tictactoe;
@@ -621,6 +621,136 @@ files:
         }
     }
   learner_created: false
+  - name: src/tictactoe/Field.java
+    visible: true
+    text: "package tictactoe;\n\n\n/**\n * Class contains game field and methods to\
+    \ interact with it\n */\npublic class Field {\n\tprivate final String[][] field;\
+    \ // game field must be square matrix\n\tprivate final Checker CHECKER;\n\n\t\
+    Field(Checker checker) {\n\t\tthis.field = new String[3][3];\n\t\tthis.CHECKER\
+    \ = checker;\n\t}\n\n\tpublic Field(String[][] field, Checker checker) {\n\t\t\
+    this.field = field;\n\t\tthis.CHECKER = checker;\n\t}\n\n\tpublic Field(int size,\
+    \ Checker checker) {\n\t\tthis.field = new String[size][size];\n\t\tthis.CHECKER\
+    \ = checker;\n\t}\n\n\t/**\n\t * Method will count number of each player chars\
+    \ and determine who should go next\n\t *\n\t * @return \"X\" - number of \"O\"\
+    \ chars bigger or lover then number of \"X\" chars\n\t */\n\tpublic String determineWhoMakeNextMove()\
+    \ {\n\t\tint x = 0;\n\t\tint o = 0;\n\n\t\t//count number of each char\n\t\tfor\
+    \ (String[] row : field) {\n\t\t\tfor (String cell : row) {\n\t\t\t\tif (\"X\"\
+    .equals(cell)) {\n\t\t\t\t\tx++;\n\t\t\t\t} else if (\"O\".equals(cell)) {\n\t\
+    \t\t\t\to++;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\n\t\treturn x <= o ? \"X\" : \"O\";\n\
+    \t}\n\n\t/**\n\t * Method will fill field with given input\n\t *\n\t * @param\
+    \ input string with similar insides - ___XXOO_X, \"_\" - nothing\n\t * @throws\
+    \ IllegalArgumentException if length of input is not equal to size of field\n\t\
+    \ */\n\tpublic void fillField(String input) throws IllegalArgumentException {\n\
+    \t\tif (input.length() != Math.pow(field.length, 2)) {\n\t\t\tthrow new IllegalArgumentException(\"\
+    Length of input (\"\n\t\t\t\t\t+ input + \") is not equal to number of cells in\
+    \ field (\" + Math.pow(field.length, 2) + \")\");\n\t\t}\n\n\t\tString[] signs\
+    \ = input.split(\"\");\n\t\tint counter = 0;\n\n\t\tfor (int i = 0; i < field.length;\
+    \ i++) {\n\t\t\tfor (int j = 0; j < field[0].length; j++) {\n\t\t\t\tif (\"_\"\
+    .equals(signs[counter])) {\n\t\t\t\t\tfield[i][j] = \" \";\n\t\t\t\t} else {\n\
+    \t\t\t\t\tfield[i][j] = signs[counter];\n\t\t\t\t}\n\t\t\t\tcounter++;\n\t\t\t\
+    }\n\t\t}\n\t}\n\n\tpublic void putOnField(String input, String coordinates) throws\
+    \ IllegalArgumentException {\n\t\ttry {\n\t\t\tCHECKER.checkCoordinates(coordinates,\
+    \ field);\n\t\t} catch (IllegalArgumentException e) {\n\t\t\tthrow new IllegalArgumentException(e.getMessage());\n\
+    \t\t}\n\n\t\tString[] splitCoordinates = coordinates.split(\"[,.\\\\s]+\");\n\t\
+    \tString cell = field[Integer.parseInt(splitCoordinates[0]) - 1][Integer.parseInt(splitCoordinates[1])\
+    \ - 1];\n\n\t\tif (!\"X\".equals(cell) && !\"O\".equals(cell)) {\n\t\t\tfield[Integer.parseInt(splitCoordinates[0])\
+    \ - 1][Integer.parseInt(splitCoordinates[1]) - 1] = input;\n\t\t} else {\n\t\t\
+    \tthrow new IllegalArgumentException(\"This cell is occupied! Choose another one!\"\
+    );\n\t\t}\n\t}\n\n\t/**\n\t * Show field\n\t */\n\tpublic void showField() {\n\
+    \t\tfor (int i = 0; i < field[0].length * 2 + 2; i++) {\n\t\t\tSystem.out.print(\"\
+    -\");\n\t\t}\n\t\tSystem.out.println();\n\n\t\tfor (String[] row : field) {\n\t\
+    \t\tSystem.out.print(\"| \");\n\t\t\tfor (String cell : row) {\n\t\t\t\tSystem.out.print(cell\
+    \ + \" \");\n\t\t\t}\n\t\t\tSystem.out.println(\"|\");\n\t\t}\n\n\t\tfor (int\
+    \ i = 0; i < field[0].length * 2 + 2; i++) {\n\t\t\tSystem.out.print(\"-\");\n\
+    \t\t}\n\t\tSystem.out.println();\n\t}\n\n\tpublic String[][] getField() {\n\t\t\
+    return field;\n\t}\n}\n"
+    learner_created: true
+  - name: src/tictactoe/Difficulty.java
+    visible: true
+    text: "package tictactoe;\n\npublic enum Difficulty {\n\tEASY,\n\tMEDIUM,\n\tHARD\n\
+    }\n"
+    learner_created: true
+  - name: src/tictactoe/AI.java
+    visible: true
+    text: "package tictactoe;\n\nimport java.util.Random;\n\npublic class AI {\n\tprivate\
+    \ final Checker CHECKER;\n\n\tAI(Checker checker) {\n\t\tthis.CHECKER = checker;\n\
+    \t}\n\n\tpublic String makeMove(Difficulty difficulty, String[][] field) throws\
+    \ IllegalArgumentException {\n\t\tswitch (difficulty) {\n\t\t\tcase EASY:\n\t\t\
+    \t\tint row = new Random().nextInt(field.length) + 1;\n\t\t\t\tint column = new\
+    \ Random().nextInt(field.length) + 1;\n\t\t\t\treturn row + \" \" + column;\n\t\
+    \t\tcase MEDIUM:\n\t\t\t\treturn \"\";\n\t\t\tcase HARD:\n\t\t\t\treturn \"\"\
+    ;\n\t\t\tdefault:\n\t\t\t\tthrow new IllegalArgumentException(\"Wrong difficulty\"\
+    );\n\t\t}\n\t}\n}\n"
+    learner_created: true
+  - name: src/tictactoe/Checker.java
+    visible: true
+    text: "package tictactoe;\n\n/**\n * Class contains methods to check given input\
+    \ for correctness\n */\npublic class Checker {\n\t/**\n\t * Method will check\
+    \ if coordinates are numbers and they are pointing to anything in game field\n\
+    \t *\n\t * @param coordinates string contains two numbers (row, column) e.g. 1\
+    \ 2, 3 4, ...\n\t * @param field       two dimensional game field\n\t * @throws\
+    \ IllegalArgumentException is thrown if coordinates are not numbers or they don't\
+    \ point to anything\n\t */\n\tpublic void checkCoordinates(String coordinates,\
+    \ String[][] field) throws IllegalArgumentException {\n\t\t//check if input is\
+    \ letters\n\t\tif (coordinates.matches(\"([a-zA-Z]+|[a-zA-Z]+ [a-zA-Z]+)+\"))\
+    \ {\n\t\t\tthrow new IllegalArgumentException(\"You should enter numbers!\");\n\
+    \t\t}\n\n\t\ttry {\n\t\t\tString[] input = coordinates.split(\"[,.\\\\s]+\");\n\
+    \n\t\t\t//check if input is digits only\n\t\t\tif (input[0].matches(\"\\\\d+\"\
+    ) && input[1].matches(\"\\\\d+\")) {\n\t\t\t\t//check if coordinates point to\
+    \ anything in field\n\t\t\t\ttry {\n\t\t\t\t\tString cell = field[Integer.parseInt(input[0])\
+    \ - 1][Integer.parseInt(input[1]) - 1];\n\t\t\t\t} catch (ArrayIndexOutOfBoundsException\
+    \ e) {\n\t\t\t\t\tthrow new IllegalArgumentException(\"Coordinates should be from\
+    \ 1 to 3!\");\n\t\t\t\t}\n\t\t\t}\n\t\t} catch (ArrayIndexOutOfBoundsException\
+    \ e) {\n\t\t\tthrow new IllegalArgumentException(\"Coordinates should contain\
+    \ two numbers separated by space\");\n\t\t}\n\t}\n\n\tpublic void checkParameters(String\
+    \ input) throws IllegalArgumentException {\n\t\tString[] parameters = input.split(\"\
+    \\\\s+\");\n\t\tif (parameters.length != 3)\n\t\t\tthrow new IllegalArgumentException(\"\
+    Wrong parameters\");\n\n\t\tif (!parameters[0].matches(\"start|exit\"))\n\t\t\t\
+    throw new IllegalArgumentException(\"Wrong parameters\");\n\t\tif (!parameters[1].matches(\"\
+    user|easy|medium|hard\") || !parameters[2].matches(\"user|easy|medium|hard\"))\n\
+    \t\t\tthrow new IllegalArgumentException(\"Wrong parameters\");\n\t}\n\n\t/**\n\
+    \t * Check game state\n\t *\n\t * @param field two dimensional array that contains\
+    \ game field\n\t * @return State.X -> X has won, State.O - O has won, State.Draw\
+    \ - draw, State.Continue - game can be continued\n\t */\n\tpublic State checkGameState(String[][]\
+    \ field) {\n\t\tState result = checkRows(field);\n\t\tif (result != null) return\
+    \ result;\n\n\t\tresult = checkColumns(field);\n\t\tif (result != null) return\
+    \ result;\n\n\t\tresult = checkDiagonals(field);\n\t\tif (result != null) return\
+    \ result;\n\n\t\tState draw = checkForDraw(field);\n\t\tif (draw != null) return\
+    \ draw;\n\n\t\treturn State.Continue;\n\t}\n\n\tprivate State checkForDraw(String[][]\
+    \ field) {\n\t\t//if all cells are occupied and no one has won -> draw\n\t\tfor\
+    \ (String[] row : field) {\n\t\t\tfor (String cell : row) {\n\t\t\t\tif (\" \"\
+    .equals(cell)) {\n\t\t\t\t\treturn null;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\n\t\treturn\
+    \ State.Draw;\n\t}\n\n\tprivate State checkDiagonals(String[][] field) {\n\t\t\
+    StringBuilder builder = new StringBuilder();\n\n\t\t//check main diagonal\n\t\t\
+    for (int i = 0; i < field.length; i++) {\n\t\t\tbuilder.append(field[i][i]);\n\
+    \t\t}\n\n\t\tif (builder.toString().matches(\"XXX\")) {\n\t\t\treturn State.X;\n\
+    \t\t} else if (builder.toString().matches(\"OOO\")) {\n\t\t\treturn State.O;\n\
+    \t\t}\n\n\t\tbuilder = new StringBuilder();\n\t\tint num = field.length - 1;\n\
+    \n\t\t//check side diagonal\n\t\tfor (String[] strings : field) {\n\t\t\tbuilder.append(strings[num]);\n\
+    \t\t\tnum--;\n\t\t}\n\n\t\tif (builder.toString().matches(\"XXX\")) {\n\t\t\t\
+    return State.X;\n\t\t} else if (builder.toString().matches(\"OOO\")) {\n\t\t\t\
+    return State.O;\n\t\t}\n\n\t\treturn null;\n\t}\n\n\tprivate State checkColumns(String[][]\
+    \ field) {\n\t\tStringBuilder builder = new StringBuilder();\n\n\t\tfor (int i\
+    \ = 0; i < field[0].length; i++) {\n\t\t\tfor (String[] strings : field) {\n\t\
+    \t\t\tbuilder.append(strings[i]);\n\t\t\t}\n\t\t}\n\n\t\tif (builder.toString().matches(\"\
+    XXX\")) {\n\t\t\treturn State.X;\n\t\t} else if (builder.toString().matches(\"\
+    OOO\")) {\n\t\t\treturn State.O;\n\t\t}\n\n\t\treturn null;\n\t}\n\n\tprivate\
+    \ State checkRows(String[][] field) {\n\t\tfor (String[] row : field) {\n\t\t\t\
+    StringBuilder builder = new StringBuilder();\n\n\t\t\tfor (String cell : row)\
+    \ {\n\t\t\t\tbuilder.append(cell);\n\t\t\t}\n\n\t\t\tif (builder.toString().matches(\"\
+    XXX\")) {\n\t\t\t\treturn State.X;\n\t\t\t} else if (builder.toString().matches(\"\
+    OOO\")) {\n\t\t\t\treturn State.O;\n\t\t\t}\n\t\t}\n\t\treturn null;\n\t}\n}\n"
+    learner_created: true
+  - name: src/tictactoe/State.java
+    visible: true
+    text: "package tictactoe;\n\npublic enum State {\n\tX(\"X wins\"),\n\tO(\"O wins\"\
+    ),\n\tDraw(\"Draw\"),\n\tContinue(\"Game not finished\");\n\n\tprivate final String\
+    \ message;\n\n\tState(String message) {\n\t\tthis.message = message;\n\t}\n\n\t\
+    public String getMessage() {\n\t\treturn message;\n\t}\n}\n"
+    learner_created: true
 feedback_link: https://hyperskill.org/projects/81/stages/449/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Thu, 21 Jan 2021 13:33:34 UTC
 record: -1

@@ -9,10 +9,30 @@ public class Main {
         Field field = new Field(checker);
         AI ai = new AI(checker);
 
-        game(checker, field, ai, Difficulty.EASY);
+        menu(checker, field, ai);
     }
 
-    private static void game(Checker checker, Field field, AI ai, Difficulty difficulty) {
+    private static void menu(Checker checker, Field field, AI ai) {
+        String input;
+
+        while (true) {
+            try {
+                System.out.println("Input command: ");
+                input = new Scanner(System.in).nextLine();
+                checker.checkParameters(input);
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        if ("start".equals(input.split("\\s+")[0])) {
+            game(checker, field, ai, input.split("\\s+")[1], input.split("\\s+")[2]);
+        } else {
+            System.exit(0);
+        }
+    }
+
+    private static void game(Checker checker, Field field, AI ai, String firstPlayer, String secondPlayer) {
         field.fillField("_________");
         field.showField();
 
@@ -22,25 +42,45 @@ public class Main {
         while (result == State.Continue) {
             try {
                 if (i % 2 == 0) {
-                    System.out.println("Enter the coordinates: ");
-                    String coordinates = new Scanner(System.in).nextLine();
-                    field.putOnField("X", coordinates);
+                    if ("user".equals(firstPlayer)) {
+                        System.out.println("Enter the coordinates: ");
+                        String coordinates = new Scanner(System.in).nextLine();
+                        field.putOnField("X", coordinates);
+                    } else {
+                        System.out.println("Making move level \"" + firstPlayer + "\"");
+                        while (true) {
+                            try {
+                                String coordinates = ai.makeMove(
+                                        Difficulty.valueOf(firstPlayer.toUpperCase(Locale.ROOT)), field.getField());
+                                field.putOnField("X", coordinates);
+                                break;
+                            } catch (IllegalArgumentException ignored) {
+                            }
+                        }
+                    }
                 } else {
-                    System.out.println("Making move level \"" + difficulty.name().toLowerCase(Locale.ROOT) + "\"");
-                    while (true) {
-                        try {
-                            String coordinates = ai.makeMove(difficulty, field.getField());
-                            field.putOnField("O", coordinates);
-                            break;
-                        } catch (IllegalArgumentException e) {
-                            continue;
+                    if ("user".equals(secondPlayer)) {
+                        System.out.println("Enter the coordinates: ");
+                        String coordinates = new Scanner(System.in).nextLine();
+                        field.putOnField("O", coordinates);
+                    } else {
+                        System.out.println("Making move level \"" + secondPlayer + "\"");
+                        while (true) {
+                            try {
+                                String coordinates = ai.makeMove(
+                                        Difficulty.valueOf(secondPlayer.toUpperCase(Locale.ROOT)), field.getField());
+                                field.putOnField("O", coordinates);
+                                break;
+                            } catch (IllegalArgumentException ignored) {
+                            }
                         }
                     }
                 }
-                field.showField();
-                i++;
 
+                field.showField();
                 result = checker.checkGameState(field.getField());
+
+                i++;
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }

@@ -2,16 +2,16 @@ type: edu
 custom_name: stage2
 files:
   - name: src/tictactoe/Main.java
-  visible: true
-  text: |
-    package tictactoe;
+    visible: true
+    text: |
+      package tictactoe;
 
-    public class Main {
-        public static void main(String[] args) {
-            // write your code here
-        }
-    }
-  learner_created: false
+      public class Main {
+          public static void main(String[] args) {
+              // write your code here
+          }
+      }
+    learner_created: false
 - name: test/Grid.java
   visible: false
   text: |-
@@ -690,4 +690,4 @@ status: Solved
 feedback:
   message: Congratulations!
   time: Thu, 21 Jan 2021 12:45:44 UTC
-record: -1
+record: 2
